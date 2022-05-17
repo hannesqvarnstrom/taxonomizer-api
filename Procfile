@@ -1,2 +1,2 @@
 web: npm run start
-release: knex migrate:latest
+release: cd ./dist && knex migrate:latest
