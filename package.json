@@ -13,7 +13,6 @@
         "build-ts": "tsc",
         "watch-ts": "tsc -w",
         "lint": "eslint src/*.ts",
-        "postinstall": "tsc",
         "lint-fix": "yarn lint --fix",
         "debug": "npm run build && npm run watch-debug",
         "serve-debug": "nodemon --inspect dist/server.js",
