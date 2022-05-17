@@ -1,6 +1,3 @@
 import knex from 'knex'
-
-export default knex({
-  client: 'pg',
-  connection: process.env.DATABASE_URL,
-})
+import config from '../knexfile'
+export default knex(config)

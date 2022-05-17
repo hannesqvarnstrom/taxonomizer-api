@@ -1,9 +1,10 @@
 import { app } from "./app";
 import log from 'heroku-logger'
+import dotenv from 'dotenv'
+
 const port = app.get("port");
 
-
-
+dotenv.config()
 const server = app.listen(port, onListening);
 server.on("error", onError);
 
