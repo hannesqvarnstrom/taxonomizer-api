@@ -1,5 +1,4 @@
 import type { Knex } from "knex";
-require('ts-node/register');
 import * as dotenv from 'dotenv'
 dotenv.config()
 // Update with your config settings.
