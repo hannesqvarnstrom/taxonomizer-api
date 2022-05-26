@@ -17,8 +17,6 @@ module.exports = {
 
   rules: {
     "max-len": ["warn", { code: 120 }],
-    "comma-dangle": ["error", "always-multiline"],
-    // "@typescript-eslint/semi": ["ignore"],
     "object-curly-spacing": ["error", "always"],
     "eol-last": ["error", "always"],
     "lines-between-class-members": [
@@ -26,13 +24,12 @@ module.exports = {
       "always",
       { exceptAfterSingleLine: true },
     ],
-    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-function-return-type": "on",
     "@typescript-eslint/no-parameter-properties": "off",
-    "@typescript-eslint/no-use-before-define": "off",
-    "max-classes-per-file": "error",
+    "@typescript-eslint/no-use-before-define": "on",
     "prefer-template": "error",
     "@typescript-eslint/camelcase": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "on",
+    "@typescript-eslint/no-unused-vars": "on",
   },
 };

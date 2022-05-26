@@ -1,17 +1,13 @@
-import request from "supertest";
-import { app } from "../app";
+import { api, testDb } from './utils/setup';
+import Suite from './utils/suite';
 
-describe("GET /", () => {
-  it("should return 200 OK", () => {
-    return request(app).get("/")
-      .expect(200);
-  });
+const suite = new Suite(testDb)
 
-  it("should return Welcome to Express", (done) => {
-    return request(app).get("/")
-      .end(function (err, res) {
-        expect(res.text).toContain("Welcome to Express");
-        done();
-      });
-  });
-});
+suite.parent('GET /', async (child) => {
+  suite.setup(child)
+
+  child.test('should return 200 OK', async () => {
+    await api.get('/')
+      .expect(200)
+  })
+})

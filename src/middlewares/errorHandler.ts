@@ -3,6 +3,7 @@ import createError from "http-errors";
 
 declare type WebError = Error & { status?: number };
 export const errorHandler = (err: WebError, req: Request, res: Response, next: NextFunction): Response => {
+  if (process.env.SHOW_ERROR) console.error(err)
   res.status(err.status || 500);
   return res.send({ error: err })
 };

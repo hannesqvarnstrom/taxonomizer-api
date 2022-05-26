@@ -1,4 +1,5 @@
 import type { Knex } from "knex";
+require('ts-node/register');
 import * as dotenv from 'dotenv'
 dotenv.config()
 // Update with your config settings.
@@ -9,30 +10,46 @@ import pg from 'pg'
 if (['production', 'staging'].includes(process.env.NODE_ENV)) {
   pg.defaults.ssl = { rejectUnauthorized: false }
 }
+
 const isProduction = process.env.NODE_ENV === 'production'
+const testConnection = process.env.TEST_DB_URL
+
 const dbURL = process.env.DATABASE_URL
 const connection = dbURL
 
 const config: { [key: string]: Knex.Config } = {
-    development: {
-        client: "postgresql",
-        connection,
-        migrations: {
-            tableName: "migrations",
-        },
+  development: {
+    client: "pg",
+    connection,
+    migrations: {
+      tableName: "migrations",
     },
+  },
 
-    production: {
-        client: "postgresql",
-        connection,
-        migrations: {
-            tableName: "migrations",
-        },
-        pool: {
-            min: 2,
-            max: 10,
-        },
+  production: {
+    client: "pg",
+    connection,
+    migrations: {
+      tableName: "migrations",
     },
+    pool: {
+      min: 2,
+      max: 10,
+    },
+  },
+  test: {
+    client: 'pg',
+    connection: {
+      // host: process.env.TEST_HOST,
+      database: process.env.TEST_DB,
+      user: process.env.TEST_USER,
+      password: process.env.TEST_PW
+    },
+    migrations: {
+      tableName: 'migrations'
+    }
+  }
 };
 
+// module.exports = config
 export default config

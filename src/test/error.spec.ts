@@ -1,9 +1,16 @@
-import request from "supertest";
-import { app } from "../app";
 
-describe("Error page", () => {
-  it("should return 404 for not existing page", () => {
-    return request(app).get("/fake-page")
-      .expect(404);
-  });
-});
+import t from 'tap'
+import { api, testDb } from './utils/setup';
+import Suite from './utils/suite';
+
+const suite = new Suite(testDb)
+
+suite.parent('Error pages', async (child) => {
+  suite.setup(child)
+
+  child.test('should return 404 for not existing page', async () => {
+    await api.get('/fake-page')
+      .expect(404)
+  })
+})
+

@@ -2,6 +2,7 @@
 import {
     JSONSchema,
     Model,
+    QueryBuilder,
 } from "objection";
 
 export class User extends Model {

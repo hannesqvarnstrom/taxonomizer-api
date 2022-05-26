@@ -1,0 +1,7 @@
+color: true
+test-arg: []
+test-env: []
+test-ignore: $.
+ts: true
+debug: true
+coverage: null

@@ -15,4 +15,6 @@ module.exports = {
         "**/test/**/*.spec.ts",
     ],
     testEnvironment: "node",
-};
+    // globalSetup: '<rootDir>/src/test/setups/setup.ts',
+    // globalTeardown: '<rootDir>/src/test/setups/teardown.ts'  
+}
