@@ -1,5 +1,7 @@
 import cliclr from 'cli-color'
-
+import tap from 'tap'
+class Test extends tap.Test {
+}
 class TestLog {
   on: boolean
 
@@ -13,7 +15,7 @@ class TestLog {
     console.log(cliclr.black.bgMagentaBright('\n' + suite))
   }
 
-  start(test: Tap.Test) {
+  start(test: Test) {
     if (!this.on) return
     const name = '  ' + test.name
     console.log(cliclr.white.bgBlue('\n' + name))

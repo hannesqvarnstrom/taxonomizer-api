@@ -26,3 +26,18 @@ export class BadRequest extends TError {
     status = 400
     message = 'Bad Request'
 }
+
+export class SessionExpired extends TError {
+  status = 401
+  message = 'Login session expired'
+}
+
+export class NotFound extends TError {
+  status = 404
+  message = 'Not found'
+}
+
+export class Unauthorized extends TError {
+  status = 401
+  message = 'Unauthorized'
+}

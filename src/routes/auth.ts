@@ -1,9 +1,10 @@
-import { Router } from 'express'
+import { Router, Request, Response, NextFunction } from 'express'
 import * as logger from 'heroku-logger'
 import { User } from '../models'
 import bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
-import { BadRequest, NoRecordsOfUser, PasswordMismatch, EmailTaken } from '../middlewares/errors'
+import { BadRequest, NoRecordsOfUser, PasswordMismatch, EmailTaken, SessionExpired } from '../middlewares/errors'
+import { authMW, getUserIfExists } from '../middlewares/auth'
 
 export const authRouter = Router()
 
@@ -27,13 +28,12 @@ authRouter.post('/login', async (req, res, next) => {
         id: user.id,
         email: user.email
       }
-      const key = process.env.PRIVATE_KEY
-      const buff = Buffer.from(key)
 
-      const expiresIn = 120 // test this
+      const key = process.env.PRIVATE_KEY
+
+      const expiresIn = 60 * 60
       const token = await jwt.sign(payload, key, {
-        expiresIn,
-        subject: String(user.id)
+        expiresIn
       })
 
       return res.send({ token, expiresIn })
@@ -43,6 +43,17 @@ authRouter.post('/login', async (req, res, next) => {
   } catch (e) {
     next(e)
   }
+})
+
+authRouter.get('/am-i-logged-in', getUserIfExists, async (req, res, next) => {
+  let answer
+  if(req.user_id) answer = 'yes'
+  else answer = 'no'
+  return res.send({answer})
+})
+
+authRouter.get('/gate', authMW, async (req, res, next) => {
+  return res.send()
 })
 
 authRouter.post('/register', async (req, res, next) => {

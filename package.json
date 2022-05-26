@@ -8,6 +8,7 @@
         "build": "npm run build-ts",
         "serve": "node dist/src/server.js",
         "test": "NODE_ENV=test npx tap src/test --bail --jobs=1 -c --reporter=classic --no-timeout --debug --after=src/test/utils/bailout.ts",
+        "test:err": "SHOW_ERROR=true NODE_ENV=test npx tap src/test --bail --jobs=1 -c --reporter=classic --no-timeout --debug --after=src/test/utils/bailout.ts",
         "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
         "watch-node": "nodemon dist/src/server.js",
         "build-ts": "tsc",

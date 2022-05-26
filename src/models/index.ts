@@ -1,7 +1,7 @@
 import { Model } from "objection";
 import knex from '../knex'
 import { User } from "./User";
-
+import { Plant } from './Plant'
 
 Model.knex(knex)
 export default knex
@@ -9,5 +9,6 @@ export default knex
 
 export {
     User,
+    Plant,
 }
 

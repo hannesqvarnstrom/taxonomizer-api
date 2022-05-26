@@ -3,7 +3,10 @@ import {
     JSONSchema,
     Model,
     QueryBuilder,
+    RelationMappings,
+    RelationMappingsThunk,
 } from "objection";
+import { Plant } from "./Plant";
 
 export class User extends Model {
     id!: number
@@ -23,5 +26,18 @@ export class User extends Model {
             password: { type: 'string' },
             image: { type: ['string', 'null'] },
         },
+    }
+
+    static get relationMappings(): RelationMappings | RelationMappingsThunk {
+      return {
+        plants: {
+          relation: Model.HasManyRelation,
+          modelClass: Plant,
+          join: {
+            from: 'users.id',
+            to: 'plants.user_id'
+          }
+        }
+      }
     }
 }
