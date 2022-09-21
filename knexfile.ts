@@ -10,9 +10,6 @@ if (['production', 'staging'].includes(process.env.NODE_ENV)) {
   pg.defaults.ssl = { rejectUnauthorized: false }
 }
 
-const isProduction = process.env.NODE_ENV === 'production'
-const testConnection = process.env.TEST_DB_URL
-
 const dbURL = process.env.DATABASE_URL
 const connection = dbURL
 
@@ -38,7 +35,7 @@ const config: { [key: string]: Knex.Config } = {
   },
   test: {
     client: 'pg',
-    connection: {
+    connection: process.env.TEST_DB_URL || {
       // host: process.env.TEST_HOST,
       database: process.env.TEST_DB,
       user: process.env.TEST_USER,

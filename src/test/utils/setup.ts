@@ -9,8 +9,8 @@ export const api = request(app)
 
 class KnexManager {
   knex: knex.Knex
-  connected = true
-  migrated = true
+  connected = false
+  migrated = false
 
   constructor(knex: knex.Knex) {
     this.knex = knex
@@ -135,6 +135,10 @@ class Suite {
   }
 
   setup (t: Tap.Test, resetDb = false) {
+    t.before(async () => {
+      console.log('????')
+      await testDb.setup()
+    }) 
     testLog.suite(t.name)
     t.beforeEach(async t => {
       if (resetDb) await testDb.restart()
