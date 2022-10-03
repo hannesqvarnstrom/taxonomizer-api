@@ -8,9 +8,9 @@ import Suite from '../utils/suite'
 
 const suite = new Suite(testDb)
 const createPlant = (obj: Objection.PartialModelGraph<Plant>, token?: string): supertest.Test => {
-  let req =  api.post('/plants')
-    if (token) req.set('Authorization', 'Bearer ' + token)
-    return req.send(obj)
+  let req = api.post('/plants')
+  if (token) req.set('Authorization', 'Bearer ' + token)
+  return req.send(obj)
 }
 
 const register = (args: object) => api
@@ -25,8 +25,8 @@ const login = (args: object) => api
   .set('Accept', 'application/json')
   .expect('Content-Type', /json/)
 
-const authorize = async (email: string = 'admin@admin.com'): Promise<string | undefined> =>{
-  const password ='12356'
+const authorize = async (email: string = 'admin@admin.com'): Promise<string | undefined> => {
+  const password = '12356'
   const registerArgs = {
     email,
     password,
@@ -53,7 +53,7 @@ suite.parent('plants CRUD', async child => {
       name: 'Should not work',
       is_private: false,
     })
-    .expect(401)
+      .expect(401)
   })
 
   child.test('create while logged in should work', async child => {
@@ -63,8 +63,8 @@ suite.parent('plants CRUD', async child => {
       name: 'Should work!',
       is_private: false
     }, token)
-    .expect(201)
-    
+      .expect(201)
+
     tap.ok(response.body.newPlant.name === 'Should work!')
     const plant: Plant = Plant.fromJson(response.body.newPlant)
     tap.ok(plant.name === 'Should work!')
@@ -77,8 +77,8 @@ suite.parent('plants CRUD', async child => {
       name: 'Should work!',
       is_private: false
     }, token)
-    .expect(201)
-    
+      .expect(201)
+
     const response = await api.get('/plants/' + plant.body.newPlant.id)
       .set('Authorization', 'Bearer ' + token)
       .expect(200)

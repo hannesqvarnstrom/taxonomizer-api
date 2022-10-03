@@ -1,6 +1,6 @@
 import cliclr from 'cli-color'
-import tap from 'tap'
-class Test extends tap.Test {
+import Tap from 'tap'
+class Test extends Tap.Test {
 }
 class TestLog {
   on: boolean
@@ -21,7 +21,7 @@ class TestLog {
     console.log(cliclr.white.bgBlue('\n' + name))
   }
 
-  succeed() { 
+  succeed() {
     if (!this.on) return
     console.log(cliclr.green('Test successful! \n'))
   }

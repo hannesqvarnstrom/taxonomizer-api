@@ -126,16 +126,16 @@ suite.parent('Auth checks', async child => {
 
     t.match(res.body.answer, 'no')
 
-    await register({email: 'someguy@hello.com', password: '123456', passwordConfirmation: '123456'}).expect(201)
-    const loginRes = await login({email: 'someguy@hello.com', password: '123456'}).expect(200)
-    
+    await register({ email: 'someguy@hello.com', password: '123456', passwordConfirmation: '123456' }).expect(201)
+    const loginRes = await login({ email: 'someguy@hello.com', password: '123456' }).expect(200)
+
     t.type(loginRes.body.token, 'string')
 
     const res2 = await api
       .get('/auth/am-i-logged-in')
       .set('Authorization', 'Bearer ' + loginRes.body.token)
       .expect(200)
-    
+
     t.match(res2.body.answer, 'yes')
   })
 
@@ -145,8 +145,8 @@ suite.parent('Auth checks', async child => {
 
     await api.get('/auth/gate').expect(401)
 
-    await register({email, password, passwordConfirmation: password}).expect(201)
-    const loginRes = await login({email, password}).expect(200)
+    await register({ email, password, passwordConfirmation: password }).expect(201)
+    const loginRes = await login({ email, password }).expect(200)
 
     await api.get('/auth/gate').set('Authorization', 'Bearer ' + loginRes.body.token).expect(200)
   })
