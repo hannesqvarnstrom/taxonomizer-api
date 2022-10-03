@@ -66,7 +66,7 @@ suite.parent('plants CRUD', async child => {
       .expect(201)
 
     tap.ok(response.body.newPlant.name === 'Should work!')
-    const plant: Plant = Plant.fromJson(response.body.newPlant)
+    const plant = Plant.fromJson(response.body.newPlant)
     tap.ok(plant.name === 'Should work!')
     tap.ok(!plant.is_private)
   })
