@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express'
 import { authMW, getUserIfExists } from '../middlewares/auth'
-import { BadRequest, NotFound } from '../middlewares/errors'
+import { BadRequest, NotFound, TError } from '../middlewares/errors'
 import Services from '../services/index.service'
 export const plantsRouter = Router()
 
@@ -50,10 +50,18 @@ plantsRouter.put('/:plantId', authMW, async (req, res, next) => {
     image,
     is_private: !!is_private
   }
+  try {
 
-  const updatedPlant = await Services.plantsService().update(req.params.plantId, req.user_id, plantArgs)
+    const updatedPlant = await Services.plantsService().update(req.params.plantId, req.user_id, plantArgs)
 
-  return res.send({ updatedPlant })
+    return res.send({ updatedPlant })
+  } catch (e) {
+    if (e instanceof TError) {
+      return res.status(e.status).send(e)
+    } else {
+      return res.status(500).send(e)
+    }
+  }
 })
 
 plantsRouter.delete('/:plantId', authMW, async (req, res, next) => {

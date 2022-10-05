@@ -86,4 +86,16 @@ suite.parent('plants CRUD', async child => {
     tap.ok(response.body.plant.name === 'Should work!')
     tap.ok(!response.body.plant.is_private)
   })
+
+  child.test('update should fail when not logged in', async child => {
+
+  })
+
+  child.test('update should fail when not owning plant', async child => {
+
+  })
+
+  child.test('update should update plant with possible arguments', async child => {
+
+  })
 })
