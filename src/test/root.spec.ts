@@ -9,7 +9,7 @@ suite.parent('GET /', async (child) => {
   suite.setup(child)
 
   child.test('should return 200 OK', async (t) => {
-    const response = await api.get('/')
+    const response = await api.get('/api/')
       .expect(200)
 
     t.ok(response.status === 200)

@@ -8,19 +8,19 @@ import Suite from '../utils/suite'
 
 const suite = new Suite(testDb)
 const createPlant = (obj: Objection.PartialModelGraph<Plant>, token?: string): supertest.Test => {
-  let req = api.post('/plants')
+  let req = api.post('/api/plants')
   if (token) req.set('Authorization', 'Bearer ' + token)
   return req.send(obj)
 }
 
 const register = (args: object) => api
-  .post('/auth/register')
+  .post('/api/auth/register')
   .send(args)
   .set('Accept', 'application/json')
   .expect('Content-Type', /json/)
 
 const login = (args: object) => api
-  .post('/auth/login')
+  .post('/api/auth/login')
   .send(args)
   .set('Accept', 'application/json')
   .expect('Content-Type', /json/)
@@ -79,7 +79,7 @@ suite.parent('plants CRUD', async child => {
     }, token)
       .expect(201)
 
-    const response = await api.get('/plants/' + plant.body.newPlant.id)
+    const response = await api.get('/api/plants/' + plant.body.newPlant.id)
       .set('Authorization', 'Bearer ' + token)
       .expect(200)
 

@@ -9,7 +9,7 @@ suite.parent('Error pages', async (child) => {
   suite.setup(child)
 
   child.test('should return 404 for not existing page', async () => {
-    await api.get('/fake-page')
+    await api.get('/api/fake-page')
       .expect(404)
   })
 })

@@ -5,13 +5,13 @@ const suite = new Suite(testDb)
 
 
 const register = (args: object) => api
-  .post('/auth/register')
+  .post('/api/auth/register')
   .send(args)
   .set('Accept', 'application/json')
   .expect('Content-Type', /json/)
 
 const login = (args: object) => api
-  .post('/auth/login')
+  .post('/api/auth/login')
   .send(args)
   .set('Accept', 'application/json')
   .expect('Content-Type', /json/)
@@ -121,7 +121,7 @@ suite.parent('Auth checks', async child => {
 
   child.test('get user if exists works', async t => {
     const res = await api
-      .get('/auth/am-i-logged-in')
+      .get('/api/auth/am-i-logged-in')
       .expect(200)
 
     t.match(res.body.answer, 'no')
@@ -143,7 +143,7 @@ suite.parent('Auth checks', async child => {
     const email = 'someotherguy@hello.com'
     const password = '123456'
 
-    await api.get('/auth/gate').expect(401)
+    await api.get('/api/auth/gate').expect(401)
 
     await register({ email, password, passwordConfirmation: password }).expect(201)
     const loginRes = await login({ email, password }).expect(200)
