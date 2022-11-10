@@ -5,8 +5,15 @@ import Services from '../services/index.service'
 export const plantsRouter = Router()
 
 plantsRouter.get('/', getUserIfExists, async (req, res, next) => {
-  const plants = await Services.plantsService().getPublicPlants(req.user_id)
-  return res.send({ plants })
+  try {
+    const plants = await Services.plantsService().getPublicPlants(req.user_id)
+    console.log('plants:', plants)
+    return res.send({ plants })
+
+  } catch (e) {
+    console.log('error:', e)
+    next(e)
+  }
 })
 
 plantsRouter.get('/:plantid', getUserIfExists, async (req, res, next) => {
