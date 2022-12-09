@@ -132,7 +132,7 @@ suite.parent('Auth checks', async child => {
     t.type(loginRes.body.token, 'string')
 
     const res2 = await api
-      .get('/auth/am-i-logged-in')
+      .get('/api/auth/am-i-logged-in')
       .set('Authorization', 'Bearer ' + loginRes.body.token)
       .expect(200)
 
@@ -148,7 +148,7 @@ suite.parent('Auth checks', async child => {
     await register({ email, password, passwordConfirmation: password }).expect(201)
     const loginRes = await login({ email, password }).expect(200)
 
-    await api.get('/auth/gate').set('Authorization', 'Bearer ' + loginRes.body.token).expect(200)
+    await api.get('/api/auth/gate').set('Authorization', 'Bearer ' + loginRes.body.token).expect(200)
   })
 })
 
