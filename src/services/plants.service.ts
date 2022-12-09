@@ -10,16 +10,21 @@ class PlantsService {
     }
 
     publicFindById = (plantId: ID, userId?: ID) => {
-        const q = PlantRepository.findById(userId)
+        const q = PlantRepository.findById(plantId, userId)
         return q
     }
 
-    create = (plantArgs: { name: string, image?: string, is_private: boolean, user_id: ID }) => {
-      return PlantRepository.create(plantArgs)
+    create = (plantArgs: { name: string, image?: string, is_private: boolean, user_id: number | string }) => {
+      const args = {
+        ...plantArgs,
+        user_id: Number(plantArgs.user_id)
+      }
+      return PlantRepository.create(args)
     }
 
-    privateFindById = (plantId: ID, userId?: ID) => {
-        return Plant.bindUserId(userId).findById(plantId).first()
+    privateFindById = async (plantId: ID, userId?: ID) => {
+        const plant = await PlantRepository.findById(plantId, userId, { owned: true })
+        return plant
     }
 
     update = async (plantId: ID, userId: ID, plantUpdateArgs: {

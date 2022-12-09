@@ -1,4 +1,4 @@
-import { Kysely, Selectable, SelectQueryBuilder } from 'kysely';
+import { Kysely, Selectable, SelectQueryBuilder, Updateable } from 'kysely';
 
 import { From } from 'kysely/dist/cjs/parser/table-parser';
 import { WhereGrouper } from 'kysely/dist/cjs/parser/filter-parser';
@@ -10,19 +10,18 @@ export {
   Plant,
 }
 
-abstract class ModelBase<CreateArgs>{
-  table: Database[keyof Database]
+abstract class ModelBase<CreateArgs, Table extends Database[keyof Database]>{
+  table: Table
   createArgs: CreateArgs
-  tableName: string & keyof Database
+  tableName: keyof Database
 }
 
 class User extends ModelBase<{
   email: string
   password: string
   image?: string
-}>
+}, Database['users']>
 {
-  table: Database['users']
   tableName: 'users'
 }
 
@@ -32,15 +31,15 @@ class Plant extends ModelBase<
     user_id: number
     image?: string
     is_private?: boolean
-  }
+  }, Database['plants']
 > {
-  table: Database['plants']
   tableName: 'plants'
 }
 
-interface IRepository<M extends ModelBase<any>> {
+interface IRepository<M extends ModelBase<any, any>> {
   get(arg0?: WhereGrouper<Database, M['tableName']>): Promise<Selectable<M['table']>[]>
   create(args: M['createArgs']): Promise<Selectable<M['table']>>
+  update(id: ID, args: Partial<M['createArgs']>): Promise<Selectable<M['table']>>
 }
 
 const tables = [
@@ -64,9 +63,33 @@ const tables = [
 //   get: 
 // }
 
-class UserRespository implements IRepository<User> {
+class Repository<TableName extends keyof Database>{
+  constructor(public readonly table: TableName) {}
+
+  protected selectQuery() {
+    return db.selectFrom(this.table)
+  }
+
+  protected updateQuery() {
+    return db.updateTable(this.table)
+  }
+
+  protected insertQuery() {
+    return db.insertInto(this.table)
+  }
+
+  protected deleteQuery() {
+    return db.deleteFrom(this.table)
+  }
+}
+
+class UserRespository extends Repository<'users'> implements IRepository<User> {
+  constructor() {
+    super('users')
+  }
+
   async get(where?: WhereGrouper<Database, 'users'>) {
-    const q = db.selectFrom('users').selectAll()
+    const q = this.selectQuery().selectAll()
     if (where) {
       q.where(where)
     }
@@ -75,7 +98,8 @@ class UserRespository implements IRepository<User> {
   }
 
   async create(args: { email: string; password: string; image?: string; }) {
-    const user = await db.insertInto('users').values({
+    const user = await this.insertQuery()
+    .values({
       email: args.email,
       password: args.password,
 
@@ -84,6 +108,14 @@ class UserRespository implements IRepository<User> {
       .executeTakeFirst()
 
     return user
+  }
+
+  async update(id: ID, args: Partial<{ email: string; password: string; image?: string; }>) {
+    return this.updateQuery()
+      .where('id', '=', Number(id))
+      .set(args)
+      .returningAll()
+      .executeTakeFirst()
   }
 }
 
@@ -99,10 +131,14 @@ class UserRespository implements IRepository<User> {
 })
 
 interface PlantQueryOpts {
-  wherePublicOrOwned: boolean
+  owned: boolean
 }
 
-class CPlantRepository implements IRepository<Plant> {
+class CPlantRepository extends Repository<'plants'> implements IRepository<Plant> {
+  constructor() {
+    super('plants')
+  }
+  
   get(where?: WhereGrouper<Database, 'plants'>) {
     const q = db.selectFrom('plants').selectAll()
     if (where) {
@@ -116,23 +152,49 @@ class CPlantRepository implements IRepository<Plant> {
     return db.insertInto('plants').values(args).returningAll().executeTakeFirst()
   }
 
-  getWherePublicOrOwned(qb: SelectQueryBuilder<Database, 'plants', {}>, user_id: number | string) {
+  async update(id: ID, args: Partial<{ email: string; password: string; image?: string; }>) {
+    return this.updateQuery()
+      .where('id', '=', Number(id))
+      .set(args)
+      .returningAll()
+      .executeTakeFirst()
+  }
+
+  getWherePublicOrOwned(qb: SelectQueryBuilder<Database, 'plants', {}>, user_id: ID) {
     return qb
-      .where('is_private', '=', true)
+      .where('is_private', '=', false)
       .orWhere('user_id', '=', Number(user_id))
     // db.selectFrom('plants')
   }
 
-  findById(id: number | string, user_id?: number | string, opts?: PlantQueryOpts) {
-    let qb = db.selectFrom('plants').selectAll()
-    if (opts.wherePublicOrOwned && user_id) {
+  getWhereOwned(qb: SelectQueryBuilder<Database, 'plants', {}>, user_id: ID) {
+    return qb.where('user_id', '=', Number(user_id))
+  }
+
+  findById(id: ID, user_id?: ID, opts?: PlantQueryOpts) {
+    let qb = this.selectQuery().selectAll().where('id', '=', Number(id))
+    
+    if (opts?.owned) {
+      this.getWhereOwned(qb, user_id)
+    } else if (user_id) {
       this.getWherePublicOrOwned(qb, user_id)
+    } else {
+      this.getPublic(qb)
     }
+
     return qb.executeTakeFirst()
   }
 
+  selectQuery() { // doesnt really help
+    return db.selectFrom('plants')
+  }
+
   getViewable(user_id: ID) {
-    return this.getWherePublicOrOwned(db.selectFrom('plants').selectAll(), user_id)
+    return this.getWherePublicOrOwned(this.selectQuery().selectAll(), user_id)
+  }
+
+  getPublic(qb: SelectQueryBuilder<Database, 'plants', {}>) {
+    return qb.where('is_private', '=', false)
   }
 }
 
