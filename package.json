@@ -7,6 +7,7 @@
     "start": "npm run serve",
     "build": "npm run build-ts",
     "serve": "node dist/src/server.js",
+    "migrate": "ts-node src/db/run-migrations.ts",
     "test": "NODE_ENV=test npx tap src/test --bail --jobs=1 -c --reporter=classic --no-timeout --debug --after=src/test/utils/bailout.ts",
     "test:err": "SHOW_ERROR=true NODE_ENV=test npx tap src/test --bail --jobs=1 -c --reporter=classic --no-timeout --debug --after=src/test/utils/bailout.ts",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
@@ -41,9 +42,10 @@
     "http-errors": "^1.7.1",
     "jsonwebtoken": "^8.5.1",
     "knex": "^2.0.0",
+    "kysely": "^0.22.0",
     "morgan": "^1.9.1",
-    "objection": "^3.0.1",
     "pg": "^8.7.3",
+    "pg-cursor": "^2.7.4",
     "pug": "^3.0.1"
   },
   "devDependencies": {
@@ -54,6 +56,7 @@
     "@types/jest": "26.0.24",
     "@types/morgan": "1.9.3",
     "@types/node": "^14.18.18",
+    "@types/pg-cursor": "^2.7.0",
     "@types/supertest": "2.0.12",
     "@types/tap": "^15.0.7",
     "@typescript-eslint/eslint-plugin": "4.33.0",

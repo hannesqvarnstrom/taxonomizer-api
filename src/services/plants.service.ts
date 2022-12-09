@@ -1,21 +1,21 @@
 import { NotFound } from "../middlewares/errors";
-import { Plant } from "../models";
+import { Plant, PlantRepository } from "../models";
 
 class PlantsService {
     constructor() { }
 
     getPublicPlants = (userId: ID) => {
-        const q = Plant.wherePublicOrOwned(userId)
+        const q = PlantRepository.getViewable(userId)
         return q
     }
 
     publicFindById = (plantId: ID, userId?: ID) => {
-        const q = Plant.wherePublicOrOwned(userId).findById(plantId).first()
+        const q = PlantRepository.findById(userId)
         return q
     }
 
     create = (plantArgs: { name: string, image?: string, is_private: boolean, user_id: ID }) => {
-        return Plant.query().insert(plantArgs)
+      return PlantRepository.create(plantArgs)
     }
 
     privateFindById = (plantId: ID, userId?: ID) => {
@@ -44,4 +44,4 @@ class PlantsService {
 
 export default PlantsService
 
-type ID = number | string
+export type ID = number | string
