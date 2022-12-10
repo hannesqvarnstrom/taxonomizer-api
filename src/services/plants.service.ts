@@ -1,5 +1,5 @@
+import { PlantRepository } from "@src/db/repositories/plant";
 import { NotFound } from "../middlewares/errors";
-import { Plant, PlantRepository } from "../models";
 
 class PlantsService {
   constructor() { }
