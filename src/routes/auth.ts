@@ -3,7 +3,7 @@ import * as logger from 'heroku-logger'
 import Services from '../services/index.service'
 import bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
-import { BadRequest, NoRecordsOfUser, PasswordMismatch, EmailTaken, SessionExpired } from '../middlewares/errors'
+import { BadRequest, NoRecordsOfUser, PasswordMismatch, EmailTaken } from '../middlewares/errors'
 import { authMW, getUserIfExists } from '../middlewares/auth'
 
 export const authRouter = Router()
@@ -79,4 +79,3 @@ authRouter.post('/register', async (req, res, next) => {
     next(e)
   }
 })
-

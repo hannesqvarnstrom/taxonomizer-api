@@ -1,5 +1,4 @@
 import { assert } from "console"
-import Objection from "objection"
 import supertest, { SuperTest } from "supertest"
 import tap from "tap"
 import { Plant } from "../../models"
@@ -7,7 +6,7 @@ import { api, testDb } from "../utils/setup"
 import Suite from '../utils/suite'
 
 const suite = new Suite(testDb)
-const createPlant = (obj: Objection.PartialModelGraph<Plant>, token?: string): supertest.Test => {
+const createPlant = (obj: {name: string, image?: string, is_private: boolean}, token?: string): supertest.Test => {
   let req = api.post('/api/plants')
   if (token) req.set('Authorization', 'Bearer ' + token)
   return req.send(obj)
@@ -65,8 +64,7 @@ suite.parent('plants CRUD', async child => {
     }, token)
       .expect(201)
 
-    tap.ok(response.body.newPlant.name === 'Should work!')
-    const plant = Plant.fromJson(response.body.newPlant)
+    const plant = response.body.newPlant
     tap.ok(plant.name === 'Should work!')
     tap.ok(!plant.is_private)
   })

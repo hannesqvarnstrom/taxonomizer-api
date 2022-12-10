@@ -14,6 +14,3 @@ class Services {
 }
 
 export default new Services()
-// getServices() {
-//     return new Services()
-// }
